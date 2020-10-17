@@ -15,7 +15,7 @@
 1. カーソルを、1 行目の 2 ～ 8 桁目に置いて Esc キーを押すと、  
    以後、Esc キーと他のキーの組み合わせ ( Esc-< 等) が入力できなくなる件の修正  
    ( `src/agent/ConsoleInput.cc` )  
-   本件は、オリジナルの方にも報告済みです(マージ未)。  
+   本件は、オリジナルの方にも報告した(マージ未)。  
    https://github.com/rprichard/winpty/pull/175
 
 2. Windows 10 で、カーソルが隠れるように画面をリサイズ(縮小)すると、  
@@ -23,7 +23,8 @@
    ( `src/agent/Scraper.cc` )  
    これは、Windows Console の以下の問題に関係があると思われる。  
    https://github.com/microsoft/terminal/issues/1976  
-   ただ、発生するプログラムと発生しないプログラムがあり、再現条件がまだよく分からない。  
+   ただ、発生するプログラムと発生しないプログラムがあり、  
+   再現条件がまだよく分からない。  
    (PDCurses ライブラリを使ったプログラムでは発生した)  
    (Windows 8.1 では発生しない)
 
