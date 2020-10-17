@@ -1,9 +1,10 @@
 # winpty-fixes
 
 ## 概要
-- MSYS2 用の winpty ( https://github.com/rprichard/winpty ) の一部修正を行ったものです。
+- MSYS2 用の winpty ( https://github.com/rprichard/winpty ) について、  
+  一部修正を行ったものです。
 
-- オリジナルのコミット 7e59fe2 (2018-12-19) をベースに修正を行いました。
+- オリジナルのコミット 7e59fe2 (2018-12-19) をベースに変更を行いました。
 
 - 変更の差分は、以下のページで確認できます。  
   https://github.com/Hamayama/winpty-fixes/compare/winpty-orig-7e59fe2...main
@@ -35,7 +36,7 @@
 
 ＜A：パッケージファイルでインストールする場合＞
 
-1. MSYS2/MinGW-w64 (64bit/32bit) 用のパッケージファイルを用意しています。  
+1. MSYS2 用のパッケージファイルを用意しています。  
    以下のページを参照して、インストールを実施ください。  
    https://github.com/Hamayama/winpty-fixes-package
 
@@ -90,10 +91,13 @@
 ## 環境等
 - OS
   - Windows 10 (version 1909) (64bit)
+  - Windows 8.1 (64bit)
 - 環境
-  - MSYS2/MinGW-w64 (64bit) (gcc version 10.2.0 (Rev1, Built by MSYS2 project))
+  - MSYS2/MinGW-w64 (64bit) (gcc version 10.2.0 (Rev1, Built by MSYS2 project)) (Windows 10)
+  - MSYS2/MinGW-w64 (64bit) (gcc version 9.2.0 (Rev2, Built by MSYS2 project)) (Windows 8.1)
 - 端末
-  - mintty 3.3.0
+  - mintty 3.3.0 (Windows 10)
+  - mintty 3.1.4 (Windows 8.1)
 - ライセンス
   - オリジナルと同様とします
 
