@@ -6,7 +6,7 @@
 - オリジナルのコミット 7e59fe2 (2018-12-19) をベースに修正を行いました。
 
 - 変更の差分は、以下のページで確認できます。  
-  https://github.com/Hamayama/winpty-fixes/compare/winpty-orig-7e59fe2...master
+  https://github.com/Hamayama/winpty-fixes/compare/winpty-orig-7e59fe2...main
 
 
 ## 変更点
@@ -18,7 +18,8 @@
    本件は、オリジナルの方にも報告済みです(マージ未)。  
    https://github.com/rprichard/winpty/pull/175
 
-2. Windows 10 で、カーソルが隠れるように画面をリサイズ(縮小)すると、異常終了する件の修正  
+2. Windows 10 で、カーソルが隠れるように画面をリサイズ(縮小)すると、  
+   異常終了する件の修正  
    ( `src/agent/Scraper.cc` )  
    これは、Windows Console の以下の問題に関係があると思われる。  
    https://github.com/microsoft/terminal/issues/1976  
@@ -97,6 +98,7 @@
 
 ## 履歴
 - 2020-10-17 v0.4.4-dev-fix0001 Escキーの問題を修正
+- 2020-10-17 v0.4.4-dev-fix0002 画面リサイズの問題を修正
 
 
 (2020-10-17)
