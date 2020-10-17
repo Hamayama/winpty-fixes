@@ -1,151 +1,102 @@
-# winpty
+# winpty-fixes
 
-[![Build Status](https://ci.appveyor.com/api/projects/status/69tb9gylsph1ee1x/branch/master?svg=true)](https://ci.appveyor.com/project/rprichard/winpty/branch/master)
+## 概要
+- MSYS2 用の winpty ( https://github.com/rprichard/winpty ) の一部修正を行ったものです。
 
-winpty is a Windows software package providing an interface similar to a Unix
-pty-master for communicating with Windows console programs.  The package
-consists of a library (libwinpty) and a tool for Cygwin and MSYS for running
-Windows console programs in a Cygwin/MSYS pty.
+- オリジナルのコミット 7e59fe2 (2018-12-19) をベースに修正を行いました。
 
-The software works by starting the `winpty-agent.exe` process with a new,
-hidden console window, which bridges between the console API and terminal
-input/output escape codes.  It polls the hidden console's screen buffer for
-changes and generates a corresponding stream of output.
+- 変更の差分は、以下のページで確認できます。  
+  https://github.com/Hamayama/winpty-fixes/compare/winpty-orig-7e59fe2...master
 
-The Unix adapter allows running Windows console programs (e.g. CMD, PowerShell,
-IronPython, etc.) under `mintty` or Cygwin's `sshd` with
-properly-functioning input (e.g. arrow and function keys) and output (e.g. line
-buffering).  The library could be also useful for writing a non-Cygwin SSH
-server.
 
-## Supported Windows versions
+## 変更点
+- オリジナルからの変更点を、以下に示します。
 
-winpty runs on Windows XP through Windows 10, including server versions.  It
-can be compiled into either 32-bit or 64-bit binaries.
+1. カーソルを、1 行目の 2 ～ 8 桁目に置いて Esc キーを押すと、  
+   以後、Esc キーと他のキーの組み合わせ ( Esc-< 等) が入力できなくなる件の修正  
+   ( `src/agent/ConsoleInput.cc` )  
+   本件は、オリジナルの方にも報告済みです(マージ未)。  
+   https://github.com/rprichard/winpty/pull/175
 
-## Cygwin/MSYS adapter (`winpty.exe`)
+2. Windows 10 で、カーソルが隠れるように画面をリサイズ(縮小)すると、異常終了する件の修正  
+   ( `src/agent/Scraper.cc` )  
+   これは、Windows Console の以下の問題に関係があると思われる。  
+   https://github.com/microsoft/terminal/issues/1976  
+   ただ、発生するプログラムと発生しないプログラムがあり、再現条件がまだよく分からない。  
+   (PDCurses ライブラリを使ったプログラムでは発生した)  
+   (Windows 8.1 では発生しない)
 
-### Prerequisites
 
-You need the following to build winpty:
+## インストール方法
+- MSYS2/MinGW-w64 (64bit) 環境でのインストール手順を、以下に示します。  
+  A または B のどちらかの方法で、インストールを実施ください。
 
-* A Cygwin or MSYS installation
-* GNU make
-* A MinGW g++ toolchain capable of compiling C++11 code to build `winpty.dll`
-  and `winpty-agent.exe`
-* A g++ toolchain targeting Cygwin or MSYS to build `winpty.exe`
+＜A：パッケージファイルでインストールする場合＞
 
-Winpty requires two g++ toolchains as it is split into two parts. The
-`winpty.dll` and `winpty-agent.exe` binaries interface with the native
-Windows command prompt window so they are compiled with the native MinGW
-toolchain.  The `winpty.exe` binary interfaces with the MSYS/Cygwin terminal so
-it is compiled with the MSYS/Cygwin toolchain.
+1. MSYS2/MinGW-w64 (64bit/32bit) 用のパッケージファイルを用意しています。  
+   以下のページを参照して、インストールを実施ください。  
+   https://github.com/Hamayama/winpty-fixes-package
 
-MinGW appears to be split into two distributions -- MinGW (creates 32-bit
-binaries) and MinGW-w64 (creates both 32-bit and 64-bit binaries).  Either
-one is generally acceptable.
+＜B：ソースコードからビルドしてインストールする場合＞
 
-#### Cygwin packages
+1. MSYS2/MinGW-w64 (64bit) のインストール  
+   事前に MSYS2/MinGW-w64 (64bit) がインストールされている必要があります。  
+   以下のページを参考に、開発環境のインストールを実施ください。  
+   https://gist.github.com/Hamayama/eb4b4824ada3ac71beee0c9bb5fa546d  
+   (すでにインストール済みであれば本手順は不要です)
 
-The default g++ compiler for Cygwin targets Cygwin itself, but Cygwin also
-packages MinGW-w64 compilers.  As of this writing, the necessary packages are:
+2. 標準版の winpty のインストール  
+   プログラムメニューから MSYS2 の MinGW 64bit Shell を起動して、以下のコマンドを実行してください。
+   ```
+     pacman -S winpty
+   ```
+   (すでにインストール済みであれば本手順は不要です)
 
-* Either `mingw64-i686-gcc-g++` or `mingw64-x86_64-gcc-g++`.  Select the
-  appropriate compiler for your CPU architecture.
-* `gcc-g++`
-* `make`
+3. msys/gcc と make のインストール  
+   プログラムメニューから MSYS2 の MinGW 64bit Shell を起動して、以下のコマンドを実行してください。
+   ```
+     pacman -S msys/gcc
+     pacman -S make
+   ```
+   (すでにインストール済みであれば本手順は不要です)
 
-As of this writing (2016-01-23), only the MinGW-w64 compiler is acceptable.
-The MinGW compiler (e.g. from the `mingw-gcc-g++` package) is no longer
-maintained and is too buggy.
+4. winpty のソースの展開  
+   本サイト ( https://github.com/Hamayama/winpty-fixes ) のソースを、  
+   (Download Zip ボタン等で) ダウンロードして、作業用のフォルダに展開してください。  
+   例えば、作業用のフォルダを c:\work とすると、  
+   c:\work\winpty の下にファイル一式が配置されるように展開してください。  
+   (注意) 作業用フォルダのパスには、空白を入れないようにしてください。
 
-#### MSYS packages
+5. winpty のコンパイル  
+   プログラムメニューから MSYS2 の MinGW 64bit Shell を起動して、以下のコマンドを実行してください。  
+   ( c:\work にソースを展開した場合)
+   ```
+     cd /c/work/winpty
+     ./configure
+     make
+   ```
 
-For the original MSYS, use the `mingw-get` tool (MinGW Installation Manager),
-and select at least these components:
+6. winpty-agent の更新  
+   コンパイルに成功すると、winpty フォルダ内の build フォルダの中に、  
+   成果物が生成されます。  
+   そこにある winpty-agent.exe を、`C:\msys64\usr\bin` にコピーしてください。  
+   (同名のファイルがあるので、上書きコピーしてください)
 
-* `mingw-developer-toolkit`
-* `mingw32-base`
-* `mingw32-gcc-g++`
-* `msys-base`
-* `msys-system-builder`
+- 以上です。
 
-When running `./configure`, make sure that `mingw32-g++` is in your
-`PATH`.  It will be in the `C:\MinGW\bin` directory.
 
-#### MSYS2 packages
+## 環境等
+- OS
+  - Windows 10 (version 1909) (64bit)
+- 環境
+  - MSYS2/MinGW-w64 (64bit) (gcc version 10.2.0 (Rev1, Built by MSYS2 project))
+- 端末
+  - mintty 3.3.0
+- ライセンス
+  - オリジナルと同様とします
 
-For MSYS2, use `pacman` and install at least these packages:
+## 履歴
+- 2020-10-17 v0.4.4-dev-fix0001 Escキーの問題を修正
 
-* `msys/gcc`
-* `mingw32/mingw-w64-i686-gcc` or `mingw64/mingw-w64-x86_64-gcc`.  Select
-  the appropriate compiler for your CPU architecture.
-* `make`
 
-MSYS2 provides three start menu shortcuts for starting MSYS2:
-
-* MinGW-w64 Win32 Shell
-* MinGW-w64 Win64 Shell
-* MSYS2 Shell
-
-To build winpty, use the MinGW-w64 {Win32,Win64} shortcut of the architecture
-matching MSYS2.  These shortcuts will put the g++ compiler from the
-`{mingw32,mingw64}/mingw-w64-{i686,x86_64}-gcc` packages into the `PATH`.
-
-Alternatively, instead of installing `mingw32/mingw-w64-i686-gcc` or
-`mingw64/mingw-w64-x86_64-gcc`, install the `mingw-w64-cross-gcc` and
-`mingw-w64-cross-crt-git` packages.  These packages install cross-compilers
-into `/opt/bin`, and then any of the three shortcuts will work.
-
-### Building the Unix adapter
-
-In the project directory, run `./configure`, then `make`, then `make install`.
-By default, winpty is installed into `/usr/local`.  Pass `PREFIX=<path>` to
-`make install` to override this default.
-
-### Using the Unix adapter
-
-To run a Windows console program in `mintty` or Cygwin `sshd`, prepend
-`winpty` to the command-line:
-
-    $ winpty powershell
-    Windows PowerShell
-    Copyright (C) 2009 Microsoft Corporation. All rights reserved.
-
-    PS C:\rprichard\proj\winpty> 10 + 20
-    30
-    PS C:\rprichard\proj\winpty> exit
-
-## Embedding winpty / MSVC compilation
-
-See `src/include/winpty.h` for the prototypes of functions exported by
-`winpty.dll`.
-
-Only the `winpty.exe` binary uses Cygwin; all the other binaries work without
-it and can be compiled with either MinGW or MSVC.  To compile using MSVC,
-download gyp and run `gyp -I configurations.gypi` in the `src` subdirectory.
-This will generate a `winpty.sln` and associated project files.  See the
-`src/winpty.gyp` and `src/configurations.gypi` files for notes on dealing with
-MSVC versions and different architectures.
-
-Compiling winpty with MSVC currently requires MSVC 2013 or newer.
-
-## Debugging winpty
-
-winpty comes with a tool for collecting timestamped debugging output.  To use
-it:
-
-1. Run `winpty-debugserver.exe` on the same computer as winpty.
-2. Set the `WINPTY_DEBUG` environment variable to `trace` for the
-   `winpty.exe` process and/or the process using `libwinpty.dll`.
-
-winpty also recognizes a `WINPTY_SHOW_CONSOLE` environment variable.  Set it
-to 1 to prevent winpty from hiding the console window.
-
-## Copyright
-
-This project is distributed under the MIT license (see the `LICENSE` file in
-the project root).
-
-By submitting a pull request for this project, you agree to license your
-contribution under the MIT license to this project.
+(2020-10-17)
