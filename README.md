@@ -79,11 +79,13 @@
      make
    ```
 
-6. winpty-agent の更新  
-   コンパイルに成功すると、winpty フォルダ内の build フォルダの中に、  
-   成果物が生成されます。  
-   そこにある winpty-agent.exe を、`C:\msys64\usr\bin` にコピーしてください。  
-   (同名のファイルがあるので、上書きコピーしてください)
+6. winpty のインストール  
+   プログラムメニューから MSYS2 の MinGW 64bit Shell を起動して、以下のコマンドを実行してください。  
+   ( c:\work にソースを展開した場合)
+   ```
+     cd /c/work/winpty
+     make PREFIX=/usr UNIX_ADAPTER_EXE=winpty.exe install
+   ```
 
 - 以上です。
 
@@ -106,4 +108,4 @@
 - 2020-10-17 v0.4.4-dev-fix0002 画面リサイズの問題を修正
 
 
-(2020-10-17)
+(2020-10-18)
