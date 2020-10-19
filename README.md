@@ -1,7 +1,7 @@
 # winpty-fixes
 
 ## 概要
-- MSYS2 用の winpty ( https://github.com/rprichard/winpty ) について、  
+- MSYS2 環境用の winpty ( https://github.com/rprichard/winpty ) について、  
   一部修正を行ったものです。
 
 - オリジナルのコミット 7e59fe2 (2018-12-19) をベースに変更を行いました。
@@ -90,6 +90,27 @@
 - 以上です。
 
 
+## その他 情報等
+1. `winpty cmd.exe` とすると、起動できない。  
+   また、このとき、MSYS2 のユーザーのホームディレクトリに .exe というフォルダができる。  
+   https://github.com/rprichard/winpty/issues/127  
+   → MSYS2 が当てたパッチのせいらしい  
+   → 以下のようにすると、起動できる  
+   ( /c オプションは //c にする必要がある ( MSYS2 では /c は C ドライブの意味になるため))
+   ```
+     winpty powershell.exe cmd.exe
+     winpty powershell.exe cmd.exe //c calc.exe
+     winpty powershell.exe cmd.exe //k calc.exe
+     
+     winpty xargs -0a <(printf "\0") cmd.exe
+     winpty xargs -0a <(printf "//c calc.exe\0") cmd.exe
+     winpty xargs -0a <(printf "//k calc.exe\0") cmd.exe
+   ```
+
+2. winpty には、隠しオプションがいくつか存在する  
+   https://github.com/rprichard/winpty/issues/103
+
+
 ## 環境等
 - OS
   - Windows 10 (version 1909) (64bit)
@@ -108,4 +129,4 @@
 - 2020-10-17 v0.4.4-dev-fix0002 画面リサイズの問題を修正
 
 
-(2020-10-18)
+(2020-10-19)
